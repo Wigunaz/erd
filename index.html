@@ -45,7 +45,6 @@ erDiagram
     ADMIN ||--o| STAFF : "is-a"
 
     PELANGGAN ||--o{ TRANSAKSI : melakukan
-    PELANGGAN ||--|{ PELANGGAN_TELEPON : memiliki
 
     ROOMS ||--o{ PS : memiliki
 
@@ -83,16 +82,12 @@ erDiagram
         varchar nama_depan
         varchar nama_belakang
         varchar email
+        varchar nomor_telepon
         varchar jalan
         varchar kota
         varchar kode_pos
         date tanggal_lahir
         datetime tanggal_daftar
-    }
-
-    PELANGGAN_TELEPON {
-        int id_pelanggan "PK, FK"
-        varchar nomor_telepon PK
     }
 
     ROOMS {
