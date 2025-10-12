@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERD Rental PS</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Entity Relationship Diagram - Sistem Rental PS</h1>
+        <div class="mermaid">
+erDiagram
+    ADMIN ||--o{ ROOMS : mengawasi
+    ADMIN ||--o{ TRANSAKSI : mengelola
+    ADMIN ||--o| SUPER_ADMIN : "is-a"
+    ADMIN ||--o| STAFF : "is-a"
+    
+    PELANGGAN ||--o{ TRANSAKSI : melakukan
+    PELANGGAN ||--|{ PELANGGAN_TELEPON : memiliki
+    
+    ROOMS ||--o{ PS : memiliki
+    PS ||--o{ TRANSAKSI : digunakan
+    PS ||--o{ PS_GAME : memiliki
+    
+    GAME ||--o{ PS_GAME : tersedia
+    GAME ||--o{ DETAIL_TRANSAKSI : dimainkan
+    
+    TRANSAKSI ||--|| WAKTU_BERMAIN : mencatat
+    TRANSAKSI ||--|{ DETAIL_TRANSAKSI : memiliki
+    TRANSAKSI }o--|| METODE_PEMBAYARAN : menggunakan
+
+    ADMIN {
+        int id_admin PK
+        varchar nama_depan
+        varchar nama_belakang
+        varchar username UK
+        varchar password
+        varchar email UK
+        datetime tanggal_bergabung
+    }
+
+    SUPER_ADMIN {
+        int id_admin "PK, FK"
+        varchar level_akses
+        text hak_khusus
+    }
+
+    STAFF {
+        int id_admin "PK, FK"
+        varchar shift
+        decimal gaji
+    }
+
+    PELANGGAN {
+        int id_pelanggan PK
+        varchar nama_depan
+        varchar nama_belakang
+        varchar email
+        varchar jalan
+        varchar kota
+        varchar kode_pos
+        date tanggal_lahir
+        datetime tanggal_daftar
+    }
+
+    PELANGGAN_TELEPON {
+        int id_pelanggan "PK, FK"
+        varchar nomor_telepon PK
+    }
+
+    ROOMS {
+        int id_room PK
+        int id_admin_pengawas FK
+        varchar nama_room
+        varchar tipe_room
+        int kapasitas
+        varchar status
+        text fasilitas
+    }
+
+    PS {
+        int id_ps PK
+        int id_room FK
+        varchar nama_ps
+        varchar tipe_konsol
+        varchar status
+        decimal harga_per_jam
+        int tahun_produksi
+    }
+
+    GAME {
+        int id_game PK
+        varchar nama_game
+        varchar genre
+        int tahun_rilis
+        varchar rating
+        varchar platform
+    }
+
+    PS_GAME {
+        int id_ps "PK, FK"
+        int id_game "PK, FK"
+    }
+
+    METODE_PEMBAYARAN {
+        int id_pembayaran PK
+        varchar nama_metode
+        varchar jenis
+        varchar nomor_referensi
+        datetime waktu_bayar
+        varchar status_pembayaran
+    }
+
+    WAKTU_BERMAIN {
+        int id_waktu PK
+        datetime waktu_mulai
+        datetime waktu_selesai
+        int durasi_menit
+        decimal biaya
+    }
+
+    TRANSAKSI {
+        int id_transaksi PK
+        int id_pelanggan FK
+        int id_admin FK
+        int id_ps FK
+        int id_waktu FK
+        int id_pembayaran FK
+        datetime tanggal_transaksi
+        decimal total_biaya
+        decimal diskon
+        decimal total_bayar
+        varchar status_transaksi
+    }
+
+    DETAIL_TRANSAKSI {
+        int id_transaksi "PK, FK"
+        int nomor_urut PK
+        int id_game FK
+        int durasi_game_menit
+        decimal biaya_game
+        text catatan
+    }
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default'
+        });
+    </script>
+</body>
+</html>
