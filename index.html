@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ERD Rental PS</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js"></script>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true });
+    </script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -136,22 +139,16 @@ erDiagram
         varchar status_pembayaran
     }
 
-    WAKTU_BERMAIN {
-        int id_waktu PK
-        datetime waktu_mulai
-        datetime waktu_selesai
-        int durasi_menit
-        decimal biaya
-    }
-
     TRANSAKSI {
         int id_transaksi PK
         int id_pelanggan FK
         int id_admin FK
         int id_ps FK
-        int id_waktu FK
         int id_pembayaran FK
         datetime tanggal_transaksi
+        datetime waktu_mulai
+        datetime waktu_selesai
+        int durasi_menit
         decimal total_biaya
         decimal diskon
         decimal total_bayar
@@ -168,12 +165,5 @@ erDiagram
     }
         </div>
     </div>
-
-    <script>
-        mermaid.initialize({ 
-            startOnLoad: true,
-            theme: 'default'
-        });
-    </script>
 </body>
 </html>
