@@ -49,10 +49,6 @@ erDiagram
     
     ROOMS ||--o{ PS : memiliki
     PS ||--o{ TRANSAKSI : digunakan
-    PS ||--o{ PS_GAME : memiliki
-    
-    GAME ||--o{ PS_GAME : tersedia
-    GAME ||--o{ DETAIL_TRANSAKSI : dimainkan
     
     TRANSAKSI ||--|{ DETAIL_TRANSAKSI : memiliki
     TRANSAKSI }o--|| METODE_PEMBAYARAN : menggunakan
@@ -116,20 +112,6 @@ erDiagram
         int tahun_produksi
     }
 
-    GAME {
-        int id_game PK
-        varchar nama_game
-        varchar genre
-        int tahun_rilis
-        varchar rating
-        varchar platform
-    }
-
-    PS_GAME {
-        int id_ps "PK, FK"
-        int id_game "PK, FK"
-    }
-
     METODE_PEMBAYARAN {
         int id_pembayaran PK
         varchar nama_metode
@@ -158,9 +140,10 @@ erDiagram
     DETAIL_TRANSAKSI {
         int id_transaksi "PK, FK"
         int nomor_urut PK
-        int id_game FK
-        int durasi_game_menit
-        decimal biaya_game
+        int id_room FK
+        int id_ps FK
+        int durasi_menit
+        decimal biaya
         text catatan
     }
         </div>
