@@ -2,157 +2,36 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ERD Rental PS - Revisi</title>
-    <script type="module">
-        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-        mermaid.initialize({ startOnLoad: true });
-    </script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .container {
-            max-width: 100%;
-            margin: 0 auto;
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            overflow-x: auto;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 30px;
-        }
-        .mermaid {
-            width: 100%;
-            overflow-x: auto;
-        }
-        .mermaid > svg {
-            width: 100% !important;
-            height: auto !important;
-        }
-    </style>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({ startOnLoad: true, theme: 'forest' });</script>
 </head>
 <body>
-    <div class="container">
-        <h1>Entity Relationship Diagram - Sistem Rental PS (Revisi)</h1>
-        <div class="mermaid">
-erDiagram
-    ADMIN ||--o{ ROOMS : mengawasi
-    ADMIN ||--o{ TRANSAKSI : mengelola
-    ADMIN ||--o| SUPER_ADMIN : "is-a"
-    ADMIN ||--o| STAFF : "is-a"
-
-    PELANGGAN ||--o{ TRANSAKSI : melakukan
-
-    ROOMS ||--o{ PS : memiliki
-
-    TRANSAKSI ||--|{ DETAIL_TRANSAKSI : memiliki
-    DETAIL_TRANSAKSI }o--|| ROOMS : menggunakan
-    DETAIL_TRANSAKSI }o--|| PS : menggunakan
-
-    TRANSAKSI }o--|| PEMBAYARAN : memiliki
-    PEMBAYARAN }o--|| METODE_PEMBAYARAN : menggunakan
-
-    ADMIN {
-        int id_admin PK
-        varchar nama_depan
-        varchar nama_belakang
-        varchar username UK
-        varchar password
-        varchar email UK
-        datetime tanggal_bergabung
-    }
-
-    SUPER_ADMIN {
-        int id_admin "PK, FK"
-        varchar level_akses
-        text hak_khusus
-    }
-
-    STAFF {
-        int id_admin "PK, FK"
-        varchar shift
-        decimal gaji
-    }
-
-    PELANGGAN {
-        int id_pelanggan PK
-        varchar nama_depan
-        varchar nama_belakang
-        varchar email
-        varchar nomor_telepon
-        varchar jalan
-        varchar kota
-        varchar kode_pos
-        date tanggal_lahir
-        datetime tanggal_daftar
-    }
-
-    ROOMS {
-        int id_room PK
-        int id_admin_pengawas FK
-        varchar nama_room
-        varchar tipe_room
-        int kapasitas
-        varchar status
-        text fasilitas
-    }
-
-    PS {
-        int id_ps PK
-        int id_room FK
-        varchar nama_ps
-        varchar tipe_konsol
-        varchar status
-        decimal harga_per_jam
-        int tahun_produksi
-    }
-
-    METODE_PEMBAYARAN {
-        int id_metode_pembayaran PK
-        varchar nama_metode
-        varchar jenis
-    }
-
-    PEMBAYARAN {
-        int id_pembayaran PK
-        int id_metode_pembayaran FK
-        varchar nomor_referensi
-        datetime waktu_bayar
-        varchar status_pembayaran
-    }
-
-    TRANSAKSI {
-        int id_transaksi PK
-        int id_pelanggan FK
-        int id_admin FK
-        int id_pembayaran FK
-        datetime tanggal_transaksi
-        decimal total_biaya
-        decimal diskon
-        decimal total_bayar
-        varchar status_transaksi
-    }
-
-    DETAIL_TRANSAKSI {
-        int id_transaksi "PK, FK"
-        int nomor_urut PK
-        int id_room FK
-        int id_ps FK
-        datetime waktu_mulai
-        datetime waktu_selesai
-        int durasi_menit
-        decimal biaya
-        text catatan
-    }
-        </div>
+    <h2 style="text-align: center; font-family: sans-serif;">StateChart Diagram: Pemesanan Makanan</h2>
+    <div class="mermaid">
+        stateDiagram-v2
+            [*] --> MenungguPesanan
+            
+            MenungguPesanan --> MenungguKonfirmasiPembayaran: Checkout
+            
+            state Pembayaran_Gagal <<choice>>
+            MenungguKonfirmasiPembayaran --> Pembayaran_Gagal: Gagal
+            Pembayaran_Gagal --> MenungguKonfirmasiPembayaran: Mengulangi Pembayaran
+            Pembayaran_Gagal --> PesananSelesai: Membatalkan Pesanan
+            
+            MenungguKonfirmasiPembayaran --> DiteruskanKeRestoran: Berhasil
+            
+            state Restoran_Response <<choice>>
+            DiteruskanKeRestoran --> Restoran_Response
+            
+            Restoran_Response --> PesananSelesai: Menolak (Dana dikembalikan)
+            Restoran_Response --> Diproses: Menerima
+            
+            Diproses --> Diantar: Kirim
+            Diantar --> Selesai: Tiba
+            Selesai --> PesananSelesai
+            
+            PesananSelesai --> [*]
     </div>
 </body>
-</html>
+            </html>
+                
