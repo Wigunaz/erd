@@ -3,35 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
-    <script>mermaid.initialize({ startOnLoad: true, theme: 'forest' });</script>
+    <script>mermaid.initialize({ startOnLoad: true, theme: 'neutral' });</script>
 </head>
 <body>
-    <h2 style="text-align: center; font-family: sans-serif;">StateChart Diagram: Pemesanan Makanan</h2>
+    <h2 style="text-align: center; font-family: sans-serif;">Sequence Diagram: Proses Pemesanan</h2>
     <div class="mermaid">
-        stateDiagram-v2
-            [*] --> MenungguPesanan
+        sequenceDiagram
+            autonumber
+            actor Pengguna
+            participant Sistem
+            participant Restoran
+
+            Pengguna->>Sistem: Pilih Menu & Checkout
+            Sistem-->>Pengguna: Menunggu Konfirmasi Pembayaran
             
-            MenungguPesanan --> MenungguKonfirmasiPembayaran: Checkout
-            
-            state Pembayaran_Gagal <<choice>>
-            MenungguKonfirmasiPembayaran --> Pembayaran_Gagal: Gagal
-            Pembayaran_Gagal --> MenungguKonfirmasiPembayaran: Mengulangi Pembayaran
-            Pembayaran_Gagal --> PesananSelesai: Membatalkan Pesanan
-            
-            MenungguKonfirmasiPembayaran --> DiteruskanKeRestoran: Berhasil
-            
-            state Restoran_Response <<choice>>
-            DiteruskanKeRestoran --> Restoran_Response
-            
-            Restoran_Response --> PesananSelesai: Menolak (Dana dikembalikan)
-            Restoran_Response --> Diproses: Menerima
-            
-            Diproses --> Diantar: Kirim
-            Diantar --> Selesai: Tiba
-            Selesai --> PesananSelesai
-            
-            PesananSelesai --> [*]
+            alt Pembayaran Gagal
+                Sistem-->>Pengguna: Notifikasi Gagal
+                alt Mengulangi
+                    Pengguna->>Sistem: Bayar Ulang
+                else Membatalkan
+                    Pengguna->>Sistem: Batal
+                end
+            else Pembayaran Berhasil
+                Sistem->>Restoran: Teruskan Pesanan
+            end
+
+            alt Restoran Menolak
+                Restoran-->>Sistem: Menolak Pesanan
+                Sistem-->>Pengguna: Dana dikembalikan & Selesai
+            else Restoran Menerima
+                Restoran-->>Sistem: Terima Pesanan
+                Note over Restoran, Sistem: Update Status
+                Restoran->>Sistem: Pesanan Diproses
+                Restoran->>Sistem: Pesanan Diantar
+                Restoran->>Sistem: Pesanan Selesai
+                Sistem-->>Pengguna: Notifikasi Selesai
+            end
     </div>
 </body>
-            </html>
-                
+</html>
